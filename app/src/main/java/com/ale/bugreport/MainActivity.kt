@@ -12,6 +12,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 class MainActivity : AppCompatActivity() {
 
@@ -57,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun postLogs(logRow: String) {
-        logsBuffer.append("$logRow \n")
+        logsBuffer.append("${LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC)} $logRow \n")
         coroutineScope.launch {
             withContext(Dispatchers.Main) {
                 logs?.text = logsBuffer
