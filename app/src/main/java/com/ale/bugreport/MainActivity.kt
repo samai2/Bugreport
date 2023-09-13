@@ -20,9 +20,8 @@ class MainActivity : AppCompatActivity() {
 
     private var connectivityManager: ConnectivityManager? = null
     private val request = NetworkRequest.Builder()
-        .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-        .setIncludeOtherUidNetworks(true).build()
-    private val logsBuffer = StringBuilder();
+        .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR).build()
+    private val logsBuffer = StringBuilder()
 
     private val networkCallback: ConnectivityManager.NetworkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
@@ -43,13 +42,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        connectivityManager =            this.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager = this.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         logs = findViewById(R.id.logs)
         startTestBtn = findViewById(R.id.button)
         startTestBtn?.setOnClickListener {
             postLogs("Start test")
             coroutineScope.launch {
-                connectivityManager?.requestNetwork(request, networkCallback)
+                connectivityManager?.requestNetwork(request, networkCallback, 2_000)
             }
         }
         wipeLogs = findViewById(R.id.wipeLogs)
@@ -68,12 +67,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun unregisterNetworkCallback(){
+    private fun unregisterNetworkCallback() {
         try {
             coroutineScope.launch {
                 connectivityManager?.unregisterNetworkCallback(networkCallback)
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             //don't care
         }
     }
